@@ -131,3 +131,7 @@ novos_dados_scaled <- scale.features(novos_dados, nomes_variaveis)
 novos_dados_scaled
 str(novos_dados_scaled)
 class(novos_dados_scaled)
+
+# Fazendo previsões
+knnPredict <- predict(knn_v2, newdata = novos_dados_scaled)
+cat(sprintf("\n Previsão de \"%s\" é \"%s\"\n", novos_dados$Year, knnPredict))
