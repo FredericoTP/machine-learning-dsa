@@ -1,3 +1,5 @@
+# Bagging - Extremely Randomized Trees
+
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.datasets import load_digits
