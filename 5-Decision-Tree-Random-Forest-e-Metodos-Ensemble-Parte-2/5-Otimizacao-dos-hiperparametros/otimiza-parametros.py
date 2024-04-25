@@ -1,7 +1,11 @@
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import ExtraTreesClassifier
-from sklearn.model_selection import cross_val_score, train_test_split
+from sklearn.model_selection import (
+    cross_val_score,
+    train_test_split,
+    RandomizedSearchCV,
+)
 from sklearn.preprocessing import scale
 from sklearn.metrics import confusion_matrix, accuracy_score
 import warnings
@@ -49,3 +53,46 @@ print("Confussion Matrix: ", confusionMatrix)
 
 # Acurácia
 print("Acurácia em Teste: ", accuracy_score(y_test, y_pred))
+
+# -------------------------------------------
+
+# Otimização dos Hiperparâmetros com Randomized Search
+
+# O Randomized Search gera amostras dos parâmetros dos algoritmos a partir de
+# uma distribuição randômica uniforme para um número fixo de iterações. Um
+# modelo é construído e testado para cada combinação de parâmetros.
+
+# Definição dos parâmetros
+param_dist = {
+    "max_depth": [1, 3, 7, 8, 12, None],
+    "max_features": [8, 9, 10, 11, 16, 22],
+    "min_samples_split": [8, 10, 11, 14, 16, 19],
+    "min_samples_leaf": [1, 2, 3, 4, 5, 6, 7],
+    "bootstrap": [True, False],
+}
+
+# Para o classificador criado com ExtraTrees, testamos diferentes combinações de parâmetros
+rsearch = RandomizedSearchCV(
+    clf, param_distributions=param_dist, n_iter=25, return_train_score=True
+)
+
+# Aplicando o resultado ao conjunto de dados de treino e obtendo o score
+rsearch.fit(X_train, y_train)
+
+# Resultados
+print("Resultados: ", rsearch.cv_results_)
+
+# Imprimindo o melhor estimador
+bestclf = rsearch.best_estimator_
+print("Melhor estimador: ", bestclf)
+
+# Aplicando o melhor estimador para realizar as previsões
+y_pred = bestclf.predict(X_test)
+
+# Confussion Matrix
+confusionMatrix = confusion_matrix(y_test, y_pred)
+print("Confusion Matrix: ", confusionMatrix)
+
+# Acurácia
+accuracy = accuracy_score(y_test, y_pred)
+print("Acurácia: ", accuracy)
